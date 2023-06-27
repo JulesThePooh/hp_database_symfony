@@ -1,0 +1,40 @@
+App\Entity\Teacher:
+    teacher0:
+        firstName: "Albus"
+        lastName: "Dumbledore"
+    teacher1:
+        firstName: "Minerva"
+        lastName: "McGonagall"
+    teacher2:
+        firstName: "Severus"
+        lastName: "Rogue"
+    teacher3:
+        firstName: "Madame"
+        lastName: "Bibine"
+    teacher4:
+        firstName: "Pomora"
+        lastName: "Chourave"
+    teacher5:
+        firstName: "Filius"
+        lastName: "Flitwik"
+    teacher6:
+        firstName: "Reubus"
+        lastName: "Hagrid"
+    teacher7:
+        firstName: "Sybille"
+        lastName: "Trelawney"
+    teacher8:
+        firstName: "Quirinus"
+        lastName: "Quirrel"
+    teacher9:
+        firstName: "Gilderoy"
+        lastName: "Lockhart"
+    teacher10:
+        firstName: "Remus"
+        lastName: "Lupin"
+    teacher11:
+        firstName: "Maugrey"
+        lastName: "Fol Oeil"
+    teacher12:
+        firstName: "Dolorès Jane"
+        lastName: "Ombrage"
