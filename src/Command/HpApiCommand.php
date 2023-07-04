@@ -3,9 +3,12 @@
 namespace App\Command;
 
 use App\Entity\House;
+use App\Entity\HousePoint;
 use App\Entity\Student;
 use App\Entity\Subject;
 use App\Entity\Teacher;
+use App\Entity\TypeOfClass;
+use App\Repository\HousePointRepository;
 use App\Repository\HouseRepository;
 use App\Repository\StudentRepository;
 use App\Repository\SubjectRepository;
@@ -37,6 +40,7 @@ class HpApiCommand extends Command
         private HouseRepository        $houseRepository,
         private TypeOfClassRepository  $typeOfClassRepository,
         private SubjectRepository      $subjectRepository,
+        private HousePointRepository   $housePointRepository,
     )
     {
         parent::__construct();
@@ -66,6 +70,16 @@ class HpApiCommand extends Command
          * handle add type of class
          */
         $this->addSubjects();
+
+        /**
+         * handle house point
+         */
+        $this->addHousePoint();
+
+        /**
+         * handle type of class
+         */
+        $this->addTypeOfClass();
 
 
         return Command::SUCCESS;
@@ -116,15 +130,38 @@ class HpApiCommand extends Command
 
     public function deleteAllData(): void
     {
+        /**
+         * delete student
+         */
         $studentEntities = $this->studentRepository->findAll();
         foreach ($studentEntities as $studentEntity) {
             $this->entityManager->remove($studentEntity);
         }
 
+        /**
+         * delete teacher
+         */
         $teacherEntities = $this->teacherRepository->findAll();
         foreach ($teacherEntities as $teacherEntity) {
             $this->entityManager->remove($teacherEntity);
         }
+
+        /**
+         * delete house point
+         */
+        $housePointEntities = $this->housePointRepository->findAll();
+        foreach ($housePointEntities as $housePoint) {
+            $this->entityManager->remove($housePoint);
+        }
+
+        /**
+         * delete type of class
+         */
+        $typeOfClassEntities = $this->typeOfClassRepository->findAll();
+        foreach ($typeOfClassEntities as $typeOfClass) {
+            $this->entityManager->remove($typeOfClass);
+        }
+
 
         $this->entityManager->flush();
     }
@@ -193,6 +230,45 @@ class HpApiCommand extends Command
                 $entity = new Subject();
                 $entity->setSubjectName($item);
                 $this->entityManager->persist($entity);
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function addHousePoint(): void
+    {
+        $houseEntities = $this->houseRepository->findAll();
+        foreach ($houseEntities as $houseEntity) {
+            $year = 2023;
+            for ($i = 0; $i < 25; $i++) {
+                $housePointEntity = new HousePoint();
+                $housePointEntity->setHouse($houseEntity);
+                $housePointEntity->setYear($year);
+                $housePointEntity->setTotalPoint(rand(1000, 9999));
+                $this->entityManager->persist($housePointEntity);
+                $year--;
+            }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function addTypeOfClass(): void
+    {
+        $teacherEntities = $this->teacherRepository->findAll();
+
+        $subjectEntities = $this->subjectRepository->findAll();
+        foreach ($subjectEntities as $subjectEntity) {
+            $year = 2023;
+            for ($i = 0; $i < 25; $i++) {
+                $typeOfClassEntity = new TypeOfClass();
+                $typeOfClassEntity->setSubject($subjectEntity);
+                $typeOfClassEntity->setTeacher($teacherEntities[rand(0, (count($teacherEntities) - 1))]);
+                $typeOfClassEntity->setYearTaught($year);
+                $year--;
+
+                $this->entityManager->persist($typeOfClassEntity);
             }
         }
 
