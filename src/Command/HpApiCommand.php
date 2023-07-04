@@ -81,6 +81,11 @@ class HpApiCommand extends Command
          */
         $this->addTypeOfClass();
 
+        /**
+         * handle relation student / typeOfClass
+         */
+        $this->addRelationStudentTypeOfClasses();
+
 
         return Command::SUCCESS;
     }
@@ -130,11 +135,20 @@ class HpApiCommand extends Command
 
     public function deleteAllData(): void
     {
+
         /**
          * delete student
          */
         $studentEntities = $this->studentRepository->findAll();
         foreach ($studentEntities as $studentEntity) {
+
+            /**
+             * delete typeOfClasses for a student
+             */
+            foreach ($studentEntity->getClasses() as $typeOfClassEntity) {
+                $studentEntity->removeClass($typeOfClassEntity);
+            }
+
             $this->entityManager->remove($studentEntity);
         }
 
@@ -270,6 +284,26 @@ class HpApiCommand extends Command
 
                 $this->entityManager->persist($typeOfClassEntity);
             }
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function addRelationStudentTypeOfClasses(): void
+    {
+        $studentEntities = $this->studentRepository->findAll();
+        foreach ($studentEntities as $studentEntity) {
+            $typeOfClassEntities = $this->typeOfClassRepository->findAll();
+
+            for ($i = 0; $i < 100; $i++) {
+                $randKey = rand(0, (count($typeOfClassEntities) - 1));
+                $studentEntity->addClass($typeOfClassEntities[$randKey]);
+
+                unset($typeOfClassEntities[$randKey]);
+                $typeOfClassEntities = array_values($typeOfClassEntities);
+            }
+
+            $this->entityManager->persist($studentEntity);
         }
 
         $this->entityManager->flush();
